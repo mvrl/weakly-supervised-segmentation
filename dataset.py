@@ -107,7 +107,7 @@ class MappingChallengeDataset(utils.Dataset):
         if class_ids:
             mask = np.stack(instance_masks, axis=2)
             class_ids = np.array(class_ids, dtype=np.int32)
-            return mask
+            return mask, class_ids
         else:
             # Call super class to return an empty mask
             return super(MappingChallengeDataset, self).load_mask(image_id)
@@ -323,7 +323,7 @@ def load_image_gt(dataset, config, image_id, augment=False, augmentation=None):
     # Load image and mask
 
     image = dataset.load_image(image_id)
-    mask = dataset.load_mask(image_id)
+    mask, class_ids = dataset.load_mask(image_id)
 
     # Decide the level of supervision, defined in config.py
     if CFG.SUPERVISION =='Gaussian':
@@ -337,13 +337,6 @@ def load_image_gt(dataset, config, image_id, augment=False, augmentation=None):
 
     elif  CFG.SUPERVISION =='Full':     # Fully supervised (with true segmentation masks)
         weak_mask = mask
-
-    #image, window, scale, padding = utils.resize_image(
-    #    image,
-    #    min_dim=config.IMAGE_MIN_DIM,
-    #    max_dim=config.IMAGE_MAX_DIM,
-    #    mode=config.IMAGE_RESIZE_MODE)
-    #mask = utils.resize_mask(mask, scale, padding)
 
     # Random horizontal flips.
     # TODO: will be removed in a future update in favor of augmentation
@@ -393,11 +386,6 @@ def load_image_gt(dataset, config, image_id, augment=False, augmentation=None):
         mask = mask.astype(np.bool)
 
         weak_mask = weak_mask.astype(np.bool)
-
-    # Note that some boxes might be all zeros if the corresponding mask got cropped out.
-    # and here is to filter them out
-    #_idx = np.sum(mask, axis=(0, 1)) > 0
-    #mask = mask[:, :, _idx]
 
     return image, mask, weak_mask
 
