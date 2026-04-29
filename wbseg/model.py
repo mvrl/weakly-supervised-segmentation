@@ -7,13 +7,11 @@
 ## Imports
 
 import numpy as np
-import utils
+from . import utils
 import random
 import os
 import keras
 import keras.backend as K
-#from keras.layers import Conv2D, Dropout, MaxPooling2D, LeakyReLU, Input, Dense, Lambda, Flatten, Concatenate, MaxPooling1D, MaxPool1D, AveragePooling2D, BatchNormalization
-#from keras.layers import Maximum, Average, Activation, ZeroPadding2D, Add, UpSampling2D, merge, concatenate, Conv2DTranspose
 from keras.layers import *
 
 from keras import optimizers
@@ -23,19 +21,17 @@ import keras.losses
 import matplotlib.pyplot as plt
 import multiprocessing
 import tensorflow as tf
-from dataset import MappingChallengeDataset
+from .dataset import MappingChallengeDataset
 import logging
 from keras.callbacks import ModelCheckpoint, CSVLogger
 from keras.callbacks import ReduceLROnPlateau
 from keras.callbacks import EarlyStopping
 from keras.regularizers import l1, l2
-from config import Config
+from .config import Config
 from keras.models import load_model
 from keras.losses import binary_crossentropy
 from keras import layers
-from keras.backend import tf as ktf
 from math import ceil
-#from AdamW import AdamW
 
 
 
