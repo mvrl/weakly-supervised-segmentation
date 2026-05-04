@@ -4,7 +4,7 @@
 # https://github.com/crowdAI/crowdai-mapping-challenge-mask-rcnn
 # However, please note that significant changes have been made to the code.
 
-import utils
+from . import utils
 import numpy as np
 import random
 
@@ -17,7 +17,7 @@ from scipy.stats import multivariate_normal
 import os
 import cv2 as cv    # Needed for grabCut
 import logging
-from config import Config as CFG
+from .config import Config as CFG
 
 class MappingChallengeDataset(utils.Dataset):
     def load_dataset(self, dataset_dir, load_small=False, return_coco=True):
@@ -115,7 +115,7 @@ class MappingChallengeDataset(utils.Dataset):
 
     ## Naive masks, by setting everything inside the bounding boxes to be 1, everything else is 0.
     def load_mask_naive(self, image_id):
-        """ Load mask from bounding boxes only in 
+        """ Load mask from bounding boxes only in
               a bitmap [height, width, 1] i.e. there will be only one mask
             Params:
                 - image_id : reference id for a given image
@@ -308,7 +308,7 @@ def mold_image(images, config):
 
 def load_image_gt(dataset, config, image_id, augment=False, augmentation=None):
     """Load and return ground truth data for an image (image, mask, bounding boxes).
-    augment: (Depricated. Use augmentation instead). If true, apply random
+    augment: (Deprecated. Use augmentation instead). If true, apply random
         image augmentation. Currently, only horizontal flipping is offered.
     augmentation: Optional. An imgaug (https://github.com/aleju/imgaug) augmentation.
         For example, passing imgaug.augmenters.Fliplr(0.5) flips images
@@ -341,7 +341,7 @@ def load_image_gt(dataset, config, image_id, augment=False, augmentation=None):
     # Random horizontal flips.
     # TODO: will be removed in a future update in favor of augmentation
     if augment:
-        logging.warning("'augment' is depricated. Use 'augmentation' instead.")
+        logging.warning("'augment' is deprecated. Use 'augmentation' instead.")
         if random.randint(0, 1):
             image = np.fliplr(image)
             mask = np.fliplr(mask)
@@ -371,7 +371,7 @@ def load_image_gt(dataset, config, image_id, augment=False, augmentation=None):
         # Make augmenters deterministic to apply similarly to images and masks
         det = augmentation.to_deterministic()
         image = det.augment_image(image)
-        # Change mask to np.uint8 because imgaug doesn't support np.bool
+        # Change mask to np.uint8 because imgaug doesn't support bool
         mask = det.augment_image(mask.astype(np.uint8),
                                  hooks=imgaug.HooksImages(activator=hook))
 
@@ -383,9 +383,9 @@ def load_image_gt(dataset, config, image_id, augment=False, augmentation=None):
         assert mask.shape == mask_shape, "Augmentation shouldn't change mask size"
         assert weak_mask.shape == weak_mask_shape, "Augmentation shouldn't change Usman's mask size"
         # Change mask back to bool
-        mask = mask.astype(np.bool)
+        mask = mask.astype(bool)
 
-        weak_mask = weak_mask.astype(np.bool)
+        weak_mask = weak_mask.astype(bool)
 
     return image, mask, weak_mask
 
@@ -435,7 +435,7 @@ def data_generator_modified(dataset, config, shuffle=True, augment=False, augmen
                 batch_image_ids = np.zeros((batch_size, 1))
 
                 # True segmentation mask, not used for training
-                batch_GT_mask_padded = np.zeros((batch_size, gt_masks.shape[1]+4, gt_masks.shape[1]+4, 1), dtype=np.bool)
+                batch_GT_mask_padded = np.zeros((batch_size, gt_masks.shape[1]+4, gt_masks.shape[1]+4, 1), dtype=bool)
 
                 # Gaussian masks, used for training
                 batch_gaussian_mask = np.zeros((batch_size, gaussian_mask.shape[1], gaussian_mask.shape[1], 1))
@@ -448,7 +448,7 @@ def data_generator_modified(dataset, config, shuffle=True, augment=False, augmen
             # Combining all instances of buildings into a single segmentaition mask
             for i in range(gt_masks.shape[2]):
                 incoming = gt_masks[:, :, i]
-                incoming = incoming.astype(np.bool)
+                incoming = incoming.astype(bool)
                 batch_GT_mask_padded[b, 2:302, 2:302, 0] += incoming
 
 

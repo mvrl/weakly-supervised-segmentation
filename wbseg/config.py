@@ -1,4 +1,4 @@
-# This file conatins some configuration settings about the data loading
+# This file contains some configuration settings about the data loading
 # File taken from:
 # https://github.com/crowdAI/crowdai-mapping-challenge-mask-rcnn
 # Note that many of these are not used in our code
@@ -43,10 +43,10 @@ class Config(object):
 
     # Training supervision
     SUPERVISION = 'Gaussian'    # These are the options:
-                                # 'Gaussian' : prepares dense maks by converting each bounding boxes using
+                                # 'Gaussian' : prepares dense masks by converting each bounding box using
                                 # bivariate Gaussian
 
-                                # 'Naive': naively converts all pixels inside boundin boxes to zero and all pixels
+                                # 'Naive': naively converts all pixels inside bounding boxes to zero and all pixels
                                 # outside are labeled
 
                                 # 'GrabCut': use OpenCV's grabcut implementation to prepare dense masks
